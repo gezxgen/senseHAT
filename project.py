@@ -3,27 +3,27 @@ from time import sleep
 
 
 # Define mode functions
-def mode_1(sense):
+def binary_clock(sense):
     sense.show_message("1", scroll_speed=0)
 
 
-def mode_2(sense):
+def binary_date(sense):
     sense.show_message("2", scroll_speed=0)
 
 
-def mode_3(sense):
+def analog_clock(sense):
     sense.show_message("3", scroll_speed=0)
 
 
-def mode_4(sense):
+def water_scale(sense):
     sense.show_message("4", scroll_speed=0)
 
 
-def mode_5(sense):
+def temperature(sense):
     sense.show_message("5", scroll_speed=0)
 
 
-def mode_6(sense):
+def internet(sense):
     sense.show_message("6", scroll_speed=0)
 
 
@@ -56,17 +56,17 @@ def main():
             # Display the current mode based on match-case
             match current_mode:
                 case 1:
-                    mode_1(sense)
+                    binary_clock(sense)
                 case 2:
-                    mode_2(sense)
+                    binary_date(sense)
                 case 3:
-                    mode_3(sense)
+                    analog_clock(sense)
                 case 4:
-                    mode_4(sense)
+                    water_scale(sense)
                 case 5:
-                    mode_5(sense)
+                    temperature(sense)
                 case 6:
-                    mode_6(sense)
+                    internet(sense)
 
             # Check for joystick events
             for event in sense.stick.get_events():
