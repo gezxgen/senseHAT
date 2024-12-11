@@ -45,31 +45,44 @@ def binary_date(sense):
 
     # Create a list of pixels to display and variables
     pixels = [[0, 0, 0] for _ in range(64)]
-    year_binary = bin(now.year)[2:].zfill(16)
+
+    # Convert date and time components to binary
+    year_binary = bin(now.year)[2:].zfill(8)
     month_binary = bin(now.month)[2:].zfill(8)
     day_binary = bin(now.day)[2:].zfill(8)
     weekday_binary = bin(now.weekday() + 1)[2:].zfill(8)
+    hours_binary = bin(now.hour)[2:].zfill(8)
+    minutes_binary = bin(now.minute)[2:].zfill(8)
+    seconds_binary = bin(now.second)[2:].zfill(8)
 
     for i in range(8):
-        # Year (first 2 columns) - Purple
-        if year_binary[15 - i] == '1':
+        # Year (column 0) - Purple
+        if year_binary[7 - i] == '1':
             pixels[i * 8] = [128, 0, 128]  # Purple
-            pixels[i * 8 + 1] = [128, 0, 128]
 
-        # Month (next 2 columns) - Cyan
+        # Month (column 1) - Cyan
         if month_binary[7 - i] == '1':
-            pixels[i * 8 + 2] = [0, 255, 255]  # Cyan
-            pixels[i * 8 + 3] = [0, 255, 255]
+            pixels[i * 8 + 1] = [0, 255, 255]  # Cyan
 
-        # Day (next 2 columns) - Yellow
+        # Day (column 2) - Yellow
         if day_binary[7 - i] == '1':
-            pixels[i * 8 + 4] = [255, 255, 0]  # Yellow
-            pixels[i * 8 + 5] = [255, 255, 0]
+            pixels[i * 8 + 2] = [255, 255, 0]  # Yellow
 
-        # Weekday (next 2 columns) - Orange
+        # Weekday (column 3) - Orange
         if weekday_binary[7 - i] == '1':
-            pixels[i * 8 + 6] = [255, 165, 0]  # Orange
-            pixels[i * 8 + 7] = [255, 165, 0]
+            pixels[i * 8 + 3] = [255, 165, 0]  # Orange
+
+        # Hours (column 4) - Blue
+        if hours_binary[7 - i] == '1':
+            pixels[i * 8 + 5] = [255, 0, 0]  # Blue
+
+        # Minutes (column 5) - Red
+        if minutes_binary[7 - i] == '1':
+            pixels[i * 8 + 6] = [0, 0, 255]  # Red
+
+        # Seconds (column 6) - Green
+        if seconds_binary[7 - i] == '1':
+            pixels[i * 8 + 7] = [0, 255, 0]  # Green
 
     # Update the LED matrix
     sense.set_pixels(pixels)
