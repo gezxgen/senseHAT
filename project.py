@@ -47,7 +47,7 @@ def binary_date(sense):
     pixels = [[0, 0, 0] for _ in range(64)]
 
     # Convert date and time components to binary
-    year_binary = bin(now.year)[2:].zfill(8)
+    year_binary = bin(now.year)[2:].zfill(16)
     month_binary = bin(now.month)[2:].zfill(8)
     day_binary = bin(now.day)[2:].zfill(8)
     weekday_binary = bin(now.weekday() + 1)[2:].zfill(8)
@@ -56,31 +56,35 @@ def binary_date(sense):
     seconds_binary = bin(now.second)[2:].zfill(8)
 
     for i in range(8):
-        # Year (column 0) - Purple
-        if year_binary[7 - i] == '1':
-            pixels[i * 8] = [128, 0, 128]  # Purple
+        # MSBs (bottom left)
+        if year_binary[i] == '1':  # MSB part (first 8 bits)
+            pixels[(7 - i) * 8] = [128, 0, 128]  # Purple (MSB column, placed bottom to top)
 
-        # Month (column 1) - Cyan
+        # LSBs (top right, reversed)
+        if year_binary[15 - i] == '1':  # LSB part (last 8 bits)
+            pixels[i * 8 + 1] = [128, 0, 128]  # Purple (LSB column, placed top to bottom)
+
+        # Month (column 2) - Cyan
         if month_binary[7 - i] == '1':
-            pixels[i * 8 + 1] = [0, 255, 255]  # Cyan
+            pixels[i * 8 + 2] = [0, 255, 255]  # Cyan
 
-        # Day (column 2) - Yellow
+        # Day (column 3) - Yellow
         if day_binary[7 - i] == '1':
-            pixels[i * 8 + 2] = [255, 255, 0]  # Yellow
+            pixels[i * 8 + 3] = [255, 255, 0]  # Yellow
 
-        # Weekday (column 3) - Orange
+        # Weekday (column 4) - Orange
         if weekday_binary[7 - i] == '1':
-            pixels[i * 8 + 3] = [255, 165, 0]  # Orange
+            pixels[i * 8 + 4] = [255, 165, 0]  # Orange
 
-        # Hours (column 4) - Blue
+        # Hours (column 5) - Blue
         if hours_binary[7 - i] == '1':
             pixels[i * 8 + 5] = [255, 0, 0]  # Blue
 
-        # Minutes (column 5) - Red
+        # Minutes (column 6) - Red
         if minutes_binary[7 - i] == '1':
             pixels[i * 8 + 6] = [0, 0, 255]  # Red
 
-        # Seconds (column 6) - Green
+        # Seconds (column 7) - Green
         if seconds_binary[7 - i] == '1':
             pixels[i * 8 + 7] = [0, 255, 0]  # Green
 
