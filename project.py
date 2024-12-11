@@ -21,18 +21,18 @@ def binary_clock(sense):
     for i in range(8):
         # Hours (columns 0-1)
         if binary_hours[7 - i] == '1':
-            pixels[i * 8] = [0, 0, 255]  # Blue for hours
-            pixels[i * 8 + 1] = [0, 0, 255]
+            pixels[i * 8 + 56] = [0, 0, 255]  # Blue for hours
+            pixels[i * 8 + 57] = [0, 0, 255]
 
         # Minutes (columns 3-4)
         if binary_minutes[7 - i] == '1':
-            pixels[i * 8 + 3] = [255, 0, 0]  # Red for minutes
-            pixels[i * 8 + 4] = [255, 0, 0]
+            pixels[i * 8 + 59] = [255, 0, 0]  # Red for minutes
+            pixels[i * 8 + 60] = [255, 0, 0]
 
         # Seconds (columns 6-7)
         if binary_seconds[7 - i] == '1':
-            pixels[i * 8 + 6] = [0, 255, 0]  # Green for seconds
-            pixels[i * 8 + 7] = [0, 255, 0]
+            pixels[i * 8 + 62] = [0, 255, 0]  # Green for seconds
+            pixels[i * 8 + 63] = [0, 255, 0]
 
     # Update the LED matrix
     sense.set_pixels(pixels)
