@@ -4,27 +4,27 @@ from time import sleep
 
 # Define mode functions
 def binary_clock(sense):
-    sense.show_message("1", scroll_speed=0)
+    sense.show_letter("1", scroll_speed=0)
 
 
 def binary_date(sense):
-    sense.show_message("2", scroll_speed=0)
+    sense.show_letter("2", scroll_speed=0)
 
 
 def analog_clock(sense):
-    sense.show_message("3", scroll_speed=0)
+    sense.show_letter("3", scroll_speed=0)
 
 
 def water_scale(sense):
-    sense.show_message("4", scroll_speed=0)
+    sense.show_letter("4", scroll_speed=0)
 
 
 def temperature(sense):
-    sense.show_message("5", scroll_speed=0)
+    sense.show_letter("5", scroll_speed=0)
 
 
 def internet(sense):
-    sense.show_message("6", scroll_speed=0)
+    sense.show_letter("6", scroll_speed=0)
 
 
 # Joystick event handling
