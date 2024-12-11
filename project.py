@@ -44,33 +44,30 @@ def binary_date(sense):
     # Get current date and time
     now = datetime.now()
 
-    # Create a list of pixels to display
+    # Create a list of pixels to display and variables
     pixels = [[0, 0, 0] for _ in range(64)]
-
-    # Year (first 2 columns) - Purple
     year_binary = bin(now.year)[2:].zfill(16)
+    month_binary = bin(now.month)[2:].zfill(8)
+    day_binary = bin(now.day)[2:].zfill(8)
+    weekday_binary = bin(now.weekday() + 1)[2:].zfill(8)
+
     for i in range(8):
+        # Year (first 2 columns) - Purple
         if year_binary[15 - i] == '1':
             pixels[i * 8] = [128, 0, 128]  # Purple
             pixels[i * 8 + 1] = [128, 0, 128]
 
-    # Month (next 2 columns) - Cyan
-    month_binary = bin(now.month)[2:].zfill(8)
-    for i in range(8):
+        # Month (next 2 columns) - Cyan
         if month_binary[7 - i] == '1':
             pixels[i * 8 + 2] = [0, 255, 255]  # Cyan
             pixels[i * 8 + 3] = [0, 255, 255]
 
-    # Day (next 2 columns) - Yellow
-    day_binary = bin(now.day)[2:].zfill(8)
-    for i in range(8):
+        # Day (next 2 columns) - Yellow
         if day_binary[7 - i] == '1':
             pixels[i * 8 + 4] = [255, 255, 0]  # Yellow
             pixels[i * 8 + 5] = [255, 255, 0]
 
-    # Weekday (next 2 columns) - Orange
-    weekday_binary = bin(now.weekday() + 1)[2:].zfill(8)
-    for i in range(8):
+        # Weekday (next 2 columns) - Orange
         if weekday_binary[7 - i] == '1':
             pixels[i * 8 + 6] = [255, 165, 0]  # Orange
             pixels[i * 8 + 7] = [255, 165, 0]
