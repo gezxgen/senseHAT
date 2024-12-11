@@ -1,3 +1,4 @@
+from math import cos, sin, radians
 from datetime import datetime
 from sense_hat import SenseHat
 from time import sleep
@@ -93,7 +94,49 @@ def binary_date(sense):
 
 
 def analog_clock(sense):
-    sense.show_letter("3")
+    # Get the current time
+    now = datetime.now()
+    seconds = now.second
+    minutes = now.minute
+    hours = now.hour
+
+    # Clear the screen
+    sense.clear()
+
+    # Center of the clock face
+    center = (3, 3)
+
+    # Define the colors for the clock hands
+    green = [0, 255, 0]  # Seconds hand (green)
+    red = [255, 0, 0]  # Minutes hand (red)
+    blue = [0, 0, 255]  # Hours hand (blue)
+
+    # Function to draw a hand from the center to the edge
+    def draw_hand(angle, length, color):
+        for i in range(1, length + 1):
+            # Calculate the x, y position for each point along the hand
+            x = center[0] + int(cos(radians(angle)) * i)
+            y = center[1] + int(sin(radians(angle)) * i)
+
+            # Clamp the coordinates to be within the 0-7 range
+            x = max(0, min(7, x))  # Ensure x is between 0 and 7
+            y = max(0, min(7, y))  # Ensure y is between 0 and 7
+
+            # Set each pixel for the hand
+            sense.set_pixel(x, y, color)
+
+    # Draw the seconds hand (green) with a length of 5
+    second_angle = (seconds % 60) * 6  # 360 degrees / 60 seconds = 6 degrees per second
+    draw_hand(second_angle, 5, green)  # Seconds hand length is 5
+
+    # Draw the minutes hand (red) with a length of 4
+    minute_angle = (minutes % 60) * 6  # 360 degrees / 60 minutes = 6 degrees per minute
+    draw_hand(minute_angle, 4, red)  # Minutes hand length is 4
+
+    # Draw the hours hand (blue) with a length of 3
+    # The hour hand should move slightly depending on the minute as well
+    hour_angle = ((hours % 12) + minutes / 60) * 30  # 360 degrees / 12 hours = 30 degrees per hour
+    draw_hand(hour_angle, 3, blue)  # Hours hand length is 3
 
 
 def water_scale(sense):
