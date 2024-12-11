@@ -1,10 +1,41 @@
+from datetime import datetime
 from sense_hat import SenseHat
 from time import sleep
 
 
 # Define mode functions
 def binary_clock(sense):
-    sense.show_letter("1")
+    sense.clear()
+
+    now = datetime.now()
+
+    # Convert time to binary
+    binary_hours = bin(now.hour)[2:].zfill(8)
+    binary_minutes = bin(now.minute)[2:].zfill(8)
+    binary_seconds = bin(now.second)[2:].zfill(8)
+
+    # Initialize LED matrix with all off
+    pixels = [[0, 0, 0] for _ in range(64)]
+
+    # Define binary representation on the grid
+    for i in range(8):
+        # Hours (columns 0-1)
+        if binary_hours[7 - i] == '1':
+            pixels[i * 8] = [0, 0, 255]  # Blue for hours
+            pixels[i * 8 + 1] = [0, 0, 255]
+
+        # Minutes (columns 3-4)
+        if binary_minutes[7 - i] == '1':
+            pixels[i * 8 + 3] = [255, 0, 0]  # Red for minutes
+            pixels[i * 8 + 4] = [255, 0, 0]
+
+        # Seconds (columns 6-7)
+        if binary_seconds[7 - i] == '1':
+            pixels[i * 8 + 6] = [0, 255, 0]  # Green for seconds
+            pixels[i * 8 + 7] = [0, 255, 0]
+
+    # Update the LED matrix
+    sense.set_pixels(pixels)
 
 
 def binary_date(sense):
