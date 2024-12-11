@@ -4,6 +4,18 @@ from sense_hat import SenseHat
 from time import sleep
 
 
+def water_scale(sense):
+    sense.show_letter("4")
+
+
+def temperature(sense):
+    sense.show_letter("5")
+
+
+def internet(sense):
+    sense.show_letter("6")
+
+
 def binary_clock(sense):
     sense.clear()
 
@@ -137,18 +149,6 @@ def analog_clock(sense):
     # The hour hand should move slightly depending on the minute as well
     hour_angle = ((hours % 12) + minutes / 60) * 30  # 360 degrees / 12 hours = 30 degrees per hour
     draw_hand(hour_angle, 3, blue)  # Hours hand length is 3
-
-
-def water_scale(sense):
-    sense.show_letter("4")
-
-
-def temperature(sense):
-    sense.show_letter("5")
-
-
-def internet(sense):
-    sense.show_letter("6")
 
 
 # Joystick event handling
