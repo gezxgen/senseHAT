@@ -1,45 +1,45 @@
-#!/usr/bin/env python3
 from sense_hat import SenseHat
 from time import sleep
 
 
 # Define mode functions
 def mode_1(sense):
-    sense.show_message("1", scroll_speed=0.05)
+    sense.show_message("1", scroll_speed=0)
 
 
 def mode_2(sense):
-    sense.show_message("2", scroll_speed=0.05)
+    sense.show_message("2", scroll_speed=0)
 
 
 def mode_3(sense):
-    sense.show_message("3", scroll_speed=0.05)
+    sense.show_message("3", scroll_speed=0)
 
 
 def mode_4(sense):
-    sense.show_message("4", scroll_speed=0.05)
+    sense.show_message("4", scroll_speed=0)
 
 
 def mode_5(sense):
-    sense.show_message("5", scroll_speed=0.05)
+    sense.show_message("5", scroll_speed=0)
 
 
 def mode_6(sense):
-    sense.show_message("6", scroll_speed=0.05)
+    sense.show_message("6", scroll_speed=0)
 
 
 # Joystick event handling
 def joystick_moved(event, current_mode, total_modes):
-    if event.action == "pressed":
-        if event.direction == "right":
-            current_mode += 1
-            if current_mode > total_modes:
-                current_mode = 1  # Loop back to the first mode
-        elif event.direction == "left":
-            current_mode -= 1
-            if current_mode < 1:
-                current_mode = total_modes  # Loop to the last mode
-    return current_mode
+    # if nothing was pressed, just return the given value
+    if event.action != "pressed":
+        return current_mode
+
+    # if pressed to right, increment
+    if event.direction == "right":
+        return (current_mode % total_modes) + 1
+
+    # if pressed to left, decrement
+    if event.direction == "left":
+        return (current_mode - 2) % total_modes + 1
 
 
 def main():
@@ -72,7 +72,7 @@ def main():
             for event in sense.stick.get_events():
                 current_mode = joystick_moved(event, current_mode, total_modes)
 
-            sleep(1)
+            sleep(0.1)
     except KeyboardInterrupt:
         sense.clear()
 
