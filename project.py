@@ -7,10 +7,6 @@ from re import search
 from bs4 import BeautifulSoup
 
 
-def temperature(sense):
-    sense.show_letter("5")
-
-
 def internet(sense):
     response = get("https://www.instagram.com/kevin_amm1/")
     soup = BeautifulSoup(response.text, "html.parser")
@@ -18,6 +14,11 @@ def internet(sense):
 
     if match and match.group(1) and match.group(2):
         sense.show_message(f"Followers: {match.group(1)}, Following: {match.group(2)}")
+
+
+def temperature(sense):
+    with open("/sys/class/thermal/thermal_zone0/temp", "r") as f:
+        sense.show_message(f"Temperature: {int(f.read()) / 1000}")
 
 
 def water_scale(sense):
@@ -35,32 +36,21 @@ def water_scale(sense):
     sense.set_pixels(pixels)
 
 
-def binary_clock(sense):
+def analog_clock(sense):
+    # Function to draw a hand from the center to the edge
+    def draw_hand(angle, length, color):
+        for i in range(1, length + 1):
+            x = int(cos(radians(angle)) * i) + 3
+            y = int(sin(radians(angle)) * i) + 3
+            sense.set_pixel(max(0, min(7, x)), max(0, min(7, y)), color)
+
     sense.clear()
     now = datetime.now()
+    seconds, minutes, hours = now.second, now.minute, now.hour
 
-    # Convert time to binary
-    hours, minutes = bin(now.hour)[2:].zfill(8), bin(now.minute)[2:].zfill(8)
-    seconds, pixels = bin(now.second)[2:].zfill(8), [[0, 0, 0] for _ in range(64)]
-
-    # Define binary representation
-    for i in range(8):
-        # Hours (columns 0-1)
-        if hours[7 - i] == '1':
-            pixels[(i + 2) * 8] = [0, 0, 255]  # Blue
-            pixels[(i + 2) * 8 + 1] = [0, 0, 255]
-
-        # Minutes (columns 3-4)
-        if minutes[7 - i] == '1':
-            pixels[(i + 2) * 8 + 3] = [255, 0, 0]  # Red
-            pixels[(i + 2) * 8 + 4] = [255, 0, 0]
-
-        # Seconds (columns 6-7)
-        if seconds[7 - i] == '1':
-            pixels[(i + 2) * 8 + 6] = [0, 255, 0]  # Green
-            pixels[(i + 2) * 8 + 7] = [0, 255, 0]
-
-    sense.set_pixels(pixels)
+    draw_hand((seconds % 60) * 6, 5, [0, 255, 0])
+    draw_hand((minutes % 60), 4, [255, 0, 0])
+    draw_hand(((hours % 12) + minutes / 60) * 30, 3, [0, 0, 255])
 
 
 def binary_date(sense):
@@ -107,21 +97,32 @@ def binary_date(sense):
     sense.set_pixels(pixels)
 
 
-def analog_clock(sense):
-    # Function to draw a hand from the center to the edge
-    def draw_hand(angle, length, color):
-        for i in range(1, length + 1):
-            x = int(cos(radians(angle)) * i) + 3
-            y = int(sin(radians(angle)) * i) + 3
-            sense.set_pixel(max(0, min(7, x)), max(0, min(7, y)), color)
-
+def binary_clock(sense):
     sense.clear()
     now = datetime.now()
-    seconds, minutes, hours = now.second, now.minute, now.hour
 
-    draw_hand((seconds % 60) * 6, 5, [0, 255, 0])
-    draw_hand((minutes % 60), 4, [255, 0, 0])
-    draw_hand(((hours % 12) + minutes / 60) * 30, 3, [0, 0, 255])
+    # Convert time to binary
+    hours, minutes = bin(now.hour)[2:].zfill(8), bin(now.minute)[2:].zfill(8)
+    seconds, pixels = bin(now.second)[2:].zfill(8), [[0, 0, 0] for _ in range(64)]
+
+    # Define binary representation
+    for i in range(8):
+        # Hours (columns 0-1)
+        if hours[7 - i] == '1':
+            pixels[(i + 2) * 8] = [0, 0, 255]  # Blue
+            pixels[(i + 2) * 8 + 1] = [0, 0, 255]
+
+        # Minutes (columns 3-4)
+        if minutes[7 - i] == '1':
+            pixels[(i + 2) * 8 + 3] = [255, 0, 0]  # Red
+            pixels[(i + 2) * 8 + 4] = [255, 0, 0]
+
+        # Seconds (columns 6-7)
+        if seconds[7 - i] == '1':
+            pixels[(i + 2) * 8 + 6] = [0, 255, 0]  # Green
+            pixels[(i + 2) * 8 + 7] = [0, 255, 0]
+
+    sense.set_pixels(pixels)
 
 
 # Joystick event handling
