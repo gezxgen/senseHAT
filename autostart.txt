@@ -1,0 +1,4 @@
+Because crontab is the new and preferred way to autorun a pyhton script, this approach was used.
+Type "sudo crontab -e" to open the crontab file.
+Then add the following line: @reboot /usr/bin/python3 /home/pi/senseHAT/project.py &
+This runs the python script after every reboot.
