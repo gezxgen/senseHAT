@@ -8,12 +8,16 @@ from bs4 import BeautifulSoup
 
 
 def internet(sense):
-    response = get("https://www.instagram.com/kevin_amm1/")
-    soup = BeautifulSoup(response.text, "html.parser")
-    match = search(r"(\d+)\sFollowers,\s(\d+)\sFollowing", str(soup))
+    try:
+        response = get("https://www.instagram.com/kevin_amm1/")
+        response.raise_for_status()  # Will raise an error for 4xx/5xx HTTP responses
+        soup = BeautifulSoup(response.text, "html.parser")
+        match = search(r"(\d+)\sFollowers,\s(\d+)\sFollowing", str(soup))
 
-    if match and match.group(1) and match.group(2):
-        sense.show_message(f"Followers: {match.group(1)}, Following: {match.group(2)}")
+        if match and match.group(1) and match.group(2):
+            sense.show_message(f"Followers: {match.group(1)}, Following: {match.group(2)}")
+    except Exception as e:
+        sense.show_message(f"Error: {e}")
 
 
 def temperature(sense):
@@ -131,10 +135,10 @@ def joystick_moved(event, current_mode, total_modes):
         return current_mode
 
     if event.direction == "right":
-        return (current_mode % total_modes) + 1
+        return 1 if current_mode == total_modes else current_mode + 1
 
     if event.direction == "left":
-        return (current_mode - 2) % total_modes + 1
+        return total_modes if current_mode == 1 else current_mode - 1
 
 
 def main():
