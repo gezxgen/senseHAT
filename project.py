@@ -2,10 +2,9 @@ from math import cos, sin, radians
 from datetime import datetime
 from sense_hat import SenseHat
 from time import sleep
-
-
-def water_scale(sense):
-    sense.show_letter("4")
+from requests import get
+from re import search
+from bs4 import BeautifulSoup
 
 
 def temperature(sense):
@@ -13,50 +12,62 @@ def temperature(sense):
 
 
 def internet(sense):
-    sense.show_letter("6")
+    response = get("https://www.instagram.com/kevin_amm1/")
+    soup = BeautifulSoup(response.text, "html.parser")
+    match = search(r"(\d+)\sFollowers,\s(\d+)\sFollowing", str(soup))
+
+    if match and match.group(1) and match.group(2):
+        sense.show_message(f"Followers: {match.group(1)}, Following: {match.group(2)}")
+
+
+def water_scale(sense):
+    # Get raw acceleration data from the Sense HAT
+    pixels = [(0, 0, 0)] * 64
+    acceleration = sense.get_accelerometer_raw()
+    x = int(min(max((1 - acceleration["x"]) * 4, 0), 6))
+    y = int(min(max((1 - acceleration["y"]) * 4, 0), 6))
+
+    # Light up the corresponding 2x2 block
+    for i in range(2):
+        for j in range(2):
+            pixels[int((y + i) * 8 + x + j)] = (255, 255, 255)  # Set pixel to white
+
+    sense.set_pixels(pixels)
 
 
 def binary_clock(sense):
     sense.clear()
-
     now = datetime.now()
+    pixels = [[0, 0, 0] for _ in range(64)]
 
     # Convert time to binary
     binary_hours = bin(now.hour)[2:].zfill(8)
     binary_minutes = bin(now.minute)[2:].zfill(8)
     binary_seconds = bin(now.second)[2:].zfill(8)
 
-    # Initialize LED matrix with all off
-    pixels = [[0, 0, 0] for _ in range(64)]
-
-    # Define binary representation on the grid, shifting down 2 pixels
+    # Define binary representation
     for i in range(8):
         # Hours (columns 0-1)
         if binary_hours[7 - i] == '1':
-            pixels[(i + 2) * 8] = [0, 0, 255]  # Blue for hours (shifted down)
+            pixels[(i + 2) * 8] = [0, 0, 255]  # Blue
             pixels[(i + 2) * 8 + 1] = [0, 0, 255]
 
         # Minutes (columns 3-4)
         if binary_minutes[7 - i] == '1':
-            pixels[(i + 2) * 8 + 3] = [255, 0, 0]  # Red for minutes (shifted down)
+            pixels[(i + 2) * 8 + 3] = [255, 0, 0]  # Red
             pixels[(i + 2) * 8 + 4] = [255, 0, 0]
 
         # Seconds (columns 6-7)
         if binary_seconds[7 - i] == '1':
-            pixels[(i + 2) * 8 + 6] = [0, 255, 0]  # Green for seconds (shifted down)
+            pixels[(i + 2) * 8 + 6] = [0, 255, 0]  # Green
             pixels[(i + 2) * 8 + 7] = [0, 255, 0]
 
-    # Update the LED matrix
     sense.set_pixels(pixels)
 
 
 def binary_date(sense):
     sense.clear()
-
-    # Get current date and time
     now = datetime.now()
-
-    # Create a list of pixels to display and variables
     pixels = [[0, 0, 0] for _ in range(64)]
 
     # Convert date and time components to binary
@@ -101,7 +112,6 @@ def binary_date(sense):
         if seconds_binary[7 - i] == '1':
             pixels[i * 8 + 7] = [0, 255, 0]  # Green
 
-    # Update the LED matrix
     sense.set_pixels(pixels)
 
 
